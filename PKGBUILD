@@ -24,10 +24,12 @@ options=('!strip')
 install=strata.install
 source=("Strata.AppImage::https://github.com/Niko1221/Strata/releases/download/v${pkgver}/Strata-${pkgver}-linux-x86_64.AppImage"
         'strata.png'
-        'strata.desktop')
+        'strata.desktop'
+        'strata-desktop.sh')
 sha256sums=('SKIP'
             '3b26050bea645356aa3fad98cc4f42dc35ac09ffbc57b9485639fc031b6b97b1'
-            '50c0d042e21247fd6dc3d5b5b20bf26d3f7ed34e65ea8ae026e27bc4e2766b5d')
+            '50c0d042e21247fd6dc3d5b5b20bf26d3f7ed34e65ea8ae026e27bc4e2766b5d'
+            '2a6dbde7bfcbbac2916b8cbca3dc4661c1aee8349ec31accbf4299953f7b66ce')
 noextract=('Strata.AppImage')
 
 package() {
@@ -44,7 +46,10 @@ package() {
   # merges the window into the pinned entry on Wayland and on XWayland
   install -Dm644 "$srcdir/strata.desktop" "$pkgdir/usr/share/applications/ai.strata.desktop.desktop"
 
-  # Symlink to binary: upstream's Exec= is strata-desktop
-  install -dm755 "$pkgdir/usr/bin"
-  ln -s /opt/strata/strata.AppImage "$pkgdir/usr/bin/strata-desktop"
+  # Launcher: upstream's Exec= is strata-desktop. A wrapper instead of a plain
+  # symlink, because upstream forces WEBKIT_DISABLE_DMABUF_RENDERER=1 (window on
+  # the CPU) and only respects a value that is already set - the script exports 0
+  # when an AMD card drives a connected display, and leaves your own value alone.
+  # Drop the wrapper when upstream fixes https://github.com/Niko1221/Strata/issues/5417
+  install -Dm755 "$srcdir/strata-desktop.sh" "$pkgdir/usr/bin/strata-desktop"
 }
