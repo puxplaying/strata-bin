@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Strata
+GenericName=Local AI
+Comment=Local AI, tuned to one model.
+Exec=strata-desktop %U
+Icon=strata-desktop
+Type=Application
+Categories=Development;
+Terminal=false
+StartupNotify=true
+StartupWMClass=strata-desktop
